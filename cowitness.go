@@ -1,4 +1,3 @@
-//June 7, 2023 - Added port 443 and the ability to serve files.
 package main
 
 import (
@@ -109,11 +108,21 @@ func main() {
 					})
 			} else if r.Question[0].Qtype == dns.TypeA {
 				// Check if the request is for A records
-				response.Answer = append(response.Answer,
-					&dns.A{
-						Hdr: dns.RR_Header{Name: subdomain + "." + DNSResponseName, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: DefaultTTL},
-						A:   net.ParseIP(DNSResponseIP),
-					})
+				if domain == DNSResponseName {
+					// Request for the main domain
+					response.Answer = append(response.Answer,
+						&dns.A{
+							Hdr: dns.RR_Header{Name: DNSResponseName, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: DefaultTTL},
+							A:   net.ParseIP(DNSResponseIP),
+						})
+				} else {
+					// Request for a subdomain
+					response.Answer = append(response.Answer,
+						&dns.A{
+							Hdr: dns.RR_Header{Name: subdomain + "." + DNSResponseName, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: DefaultTTL},
+							A:   net.ParseIP(DNSResponseIP),
+						})
+				}
 			}
 
 			// Send the response
