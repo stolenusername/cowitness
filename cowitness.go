@@ -1,3 +1,4 @@
+//June 7, 2023 - Added port 443 and the ability to serve files.
 package main
 
 import (
@@ -13,6 +14,7 @@ import (
 
 const (
 	HTTPPort        = 80
+	HTTPSPort       = 443
 	DNSPort         = 53
 	DNSResponseIP   = "127.0.0.1"   //Change this to the desired IP address
 	DNSResponseName = "domain.com." //Change to the desired domain name
@@ -20,14 +22,20 @@ const (
 )
 
 func main() {
+	// Get the current working directory
+	rootDir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Create log files
-	httpLogFile, err := os.OpenFile("http.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	httpLogFile, err := os.OpenFile("./http.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer httpLogFile.Close()
 
-	dnsLogFile, err := os.OpenFile("dns.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	dnsLogFile, err := os.OpenFile("./dns.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,7 +44,7 @@ func main() {
 	// Create HTTP request logger
 	httpLogger := log.New(httpLogFile, "", log.LstdFlags)
 
-	// Start HTTP server
+	// Start HTTP server on port 80
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// Log IP address, HTTP resource, and user agent to http.log
 		ipAddress := strings.Split(r.RemoteAddr, ":")[0]
@@ -45,13 +53,22 @@ func main() {
 		logMessage := fmt.Sprintf("IP address: %s, Resource: %s, User agent: %s\n", ipAddress, requestResource, userAgent)
 		httpLogger.Println(logMessage)
 
-		// Send a simple response back to the client
-		fmt.Fprintf(w, "Hello, world!")
+		// Serve the requested file
+		http.FileServer(http.Dir(rootDir)).ServeHTTP(w, r)
 	})
 
 	go func() {
 		log.Printf("Starting HTTP server on port %d\n", HTTPPort)
 		err := http.ListenAndServe(fmt.Sprintf(":%d", HTTPPort), nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	// Start HTTP server on port 443
+	go func() {
+		log.Printf("Starting HTTPS server on port %d\n", HTTPSPort)
+		err := http.ListenAndServe(fmt.Sprintf(":%d", HTTPSPort), nil)
 		if err != nil {
 			log.Fatal(err)
 		}
