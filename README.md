@@ -2,10 +2,10 @@
 
 <h3 align="center">
 
-![](Images\CoWitness.png)
+![Images\CoWitness.png](https://github.com/officialjm/cowitness/blob/main/Images/CoWitness.png)
 
- [![License: MIT](https://img.shields.io/badge/License-MIT-darkred.svg)](https://opensource.org/licenses/MIT)
- [![made-with-python](https://img.shields.io/badge/Made%20with-GoLang-blue.svg)](https://go.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-darkred.svg)](https://opensource.org/licenses/MIT)
+[![made-with-python](https://img.shields.io/badge/Made%20with-GoLang-blue.svg)](https://go.dev/)
 
 </h3>
 
