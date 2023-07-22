@@ -1,0 +1,30 @@
+BINARY=cowitness
+
+all: build
+
+build: build-x86_64 build-arm64
+
+build-x86_64:
+	GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o $(BINARY)_x86_64
+
+build-arm64:
+	GOOS=linux GOARCH=arm64 go build -ldflags "-s -w" -o $(BINARY)_arm64
+
+clean:
+	@rm -f $(BINARY)_x86_64 $(BINARY)_arm64
+
+debug-amd64:
+	@export GOFLAGS=-gcflags="all=-N -l"
+	@echo "Building Debug AMD64 Binary"
+	GOOS=linux GOARCH=amd64 go build -ldflags "-X main.BuildTime=`date -u '+%Y-%m-%d_%I:%M:%S%p'`" -o $(BINARY)-debug-amd64 cowitness.go
+
+debug-arm64:
+	@export GOFLAGS=-gcflags="all=-N -l"
+	@echo "Building Debug ARM64 Binary"
+	GOOS=linux GOARCH=arm64 go build -ldflags "-X main.BuildTime=`date -u '+%Y-%m-%d_%I:%M:%S%p'`" -o $(BINARY)-debug-arm64 cowitness.go
+
+# Clean Debug Binary
+clean-debug:
+	@echo "Cleaning Debug Binaries"
+	@rm -f $(BINARY)-debug-amd64
+	@rm -f $(BINARY)-debug-arm64

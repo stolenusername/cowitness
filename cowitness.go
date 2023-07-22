@@ -13,10 +13,9 @@ import (
 )
 
 const (
-	HTTPPort   = 80
-	HTTPSPort  = 443
-	DNSPort    = 53
-	DefaultTTL = 3600
+	HTTPPort  = 80
+	HTTPSPort = 443
+	DNSPort   = 53
 )
 
 var (
@@ -128,11 +127,11 @@ func main() {
 				response.Answer = append(response.Answer,
 					&dns.NS{
 						Hdr: dns.RR_Header{Name: DNSResponseName, Rrtype: dns.TypeNS, Class: dns.ClassINET, Ttl: uint32(DefaultTTL)},
-						Ns:  "ns1.domain.com.", //Change to the desired name servers
+						Ns:  "ns1.domain.com.", // Change to the desired name servers
 					},
 					&dns.NS{
 						Hdr: dns.RR_Header{Name: DNSResponseName, Rrtype: dns.TypeNS, Class: dns.ClassINET, Ttl: uint32(DefaultTTL)},
-						Ns:  "ns2.domain.com.", //Change to the desired name servers
+						Ns:  "ns2.domain.com.", // Change to the desired name servers
 					})
 			} else if r.Question[0].Qtype == dns.TypeA {
 				// Check if the request is for A records
