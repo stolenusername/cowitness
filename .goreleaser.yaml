@@ -1,0 +1,18 @@
+project_name: cowitness
+builds:
+  - env: [CGO_ENABLED=0]
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
+nfpms:
+- maintainer: Joe Sullivan
+  description: CoWitness is a powerful web application testing tool that enhances the accuracy and efficiency of your testing efforts.
+  homepage: https://github.com/stolenusername/cowitness
+  license: MIT
+  formats:
+  - deb
+  - rpm
+  - archlinux
