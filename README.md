@@ -1,6 +1,6 @@
-<h1 align="Center"> CoWitness </h1>
+<h1 style="text-align: center"> CoWitness </h1>
 
-<h3 align="center">
+<h3 style="text-align: center">
 
 ![Images\CoWitness.png](https://github.com/officialjm/cowitness/blob/main/Images/CoWitness.png)
 
@@ -28,11 +28,11 @@
 
 Before using CoWitness, ensure that you have the following requirements:
 
-- Go programming language installed on your system, get it [HERE](https://go.dev/).
+- Go programming language installed on your system, get it [HERE](https://go.dev/) go 1.21 required if building from source.
 - Internet access to download Go dependencies.
 - A remote server with a public IP address.
 
-## Installation 👨🏼‍🔧
+## Build 👨🏼‍🔧
 
 Follow these steps to install and compile CoWitness:
 
@@ -51,12 +51,12 @@ cd CoWitness
 3. Build the CoWitness executable:
 
 ```bash
-go build cowitness.go
+make -f Makefile build
 ```
-This command compiles the CoWitness source code and creates an executable file.
+This command compiles the CoWitness source code and creates an executable file for amd64 and arm64.
 
 
-## Usage 👨🏻‍💻
+## Installation 👨🏻‍💻
 
 **To use CoWitness on a remote server, follow these steps**:
 
@@ -72,21 +72,19 @@ Connect to the remote server via SSH:
 ```bash
 ssh username@your-server-ip
 ```
-Navigate to the directory where you transferred the CoWitness executable and run the CoWitness executable:
-
+Easy way to install cowitness is to get the automated package build from [here](https://github.com/stolenusername/cowitness/releases/latest)
+which you can then curl or wget to your system or scp the file over from your system.
 ```bash
-./CoWitness
+cowitness
 ```
 
 ## Customization ⚒️
 
 You can customize CoWitness to fit your specific needs. Here are some possible modifications:
 
-- **Change the default ports**: Modify the constants `HTTPPort`, `HTTPSPort`, and `DNSPort` in the source code to use different port numbers.
+- **Change the default ports**: See the usage help for the cli flags to change the default ports
 
 - **Modify the log file paths**: You can change the paths for the HTTP and DNS log files (http.log and dns.log) by updating the `os.OpenFile` calls in the source code.
-
-- **Customize the banner**: You can modify the ASCII art banner displayed when CoWitness starts by editing the displayBanner function in the source code.
 
 <br></br>
 ### Community & Contributions
