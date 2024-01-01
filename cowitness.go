@@ -19,10 +19,15 @@ var (
 	DNSResponseName string
 	DefaultTTL      int
 	DisplayBanner   bool
+	DisplayVersion  bool
 	HTTPPort        int
 	HTTPSPort       int
 	DNSPort         int
 )
+
+func version() string {
+	return "v1.3"
+}
 
 func main() {
 	rootDir, err := os.Getwd()
@@ -37,7 +42,13 @@ func main() {
 	flag.IntVar(&DNSPort, "dns", 53, "DNS port")
 	flag.IntVar(&DefaultTTL, "t", 3600, "The Time To Live.")
 	flag.BoolVar(&DisplayBanner, "q", false, "Disable banner output")
+	flag.BoolVar(&DisplayVersion, "v", false, "Print program version")
 	flag.Parse()
+
+	if DisplayVersion {
+		fmt.Print(version())
+		os.Exit(0)
+	}
 
 	if DisplayBanner != false {
 	} else {
@@ -198,7 +209,6 @@ func killDNSonExit() {
 func displayBanner() {
 	red := "\033[31m"
 	reset := "\033[0m"
-	cowitnessVersion := "v1.3"
 	banner := red + `
  	          ⢠⡄
 	    	⣠⣤⣾⣷⣤⣄⡀⠀⠀⠀⠀
@@ -212,6 +222,6 @@ func displayBanner() {
 ` + reset
 
 	fmt.Print(banner)
-	fmt.Println("             CoWitness", cowitnessVersion, "- Tool for HTTP, HTTPS, and DNS Server")
+	fmt.Println("             CoWitness", version(), "- Tool for HTTP, HTTPS, and DNS Server")
 	fmt.Println()
 }
