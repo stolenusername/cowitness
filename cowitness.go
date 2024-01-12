@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -13,27 +14,50 @@ import (
 	"github.com/miekg/dns"
 )
 
-const (
-	HTTPPort  = 80
-	HTTPSPort = 443
-	DNSPort   = 53
-)
-
 var (
 	DNSResponseIP   string
 	DNSResponseName string
 	DefaultTTL      int
+	DisplayBanner   bool
+	DisplayVersion  bool
+	HTTPPort        int
+	HTTPSPort       int
+	DNSPort         int
 )
 
-func main() {
-	displayBanner()
+func version() string {
+	return "v1.3"
+}
 
+func main() {
 	rootDir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	requestUserInputs()
+	flag.StringVar(&DNSResponseIP, "i", "", "The DNS response IP(required).")
+	flag.StringVar(&DNSResponseName, "n", "", "The DNS response name(required).")
+	flag.IntVar(&HTTPPort, "http", 80, "HTTP port")
+	flag.IntVar(&HTTPSPort, "https", 443, "HTTPS port")
+	flag.IntVar(&DNSPort, "dns", 53, "DNS port")
+	flag.IntVar(&DefaultTTL, "t", 3600, "The Time To Live.")
+	flag.BoolVar(&DisplayBanner, "q", false, "Disable banner output")
+	flag.BoolVar(&DisplayVersion, "v", false, "Print program version")
+	flag.Parse()
+
+	if DisplayVersion {
+		fmt.Print(version())
+		os.Exit(0)
+	}
+
+	if DisplayBanner != false {
+	} else {
+		displayBanner()
+	}
+
+	if DNSResponseIP == "" || DNSResponseName == "" {
+		log.Fatal("-i and -n are required. Please see help output with -h")
+	}
 
 	httpLogFile, dnsLogFile := createLogFiles()
 	defer closeLogFiles(httpLogFile, dnsLogFile)
@@ -66,17 +90,6 @@ func main() {
 
 	// Wait indefinitely
 	select {}
-}
-
-func requestUserInputs() {
-	fmt.Print("Enter the DNS response IP: ")
-	fmt.Scanln(&DNSResponseIP)
-
-	fmt.Print("Enter the DNS response name: ")
-	fmt.Scanln(&DNSResponseName)
-
-	fmt.Print("Enter the Default TTL: ")
-	fmt.Scanln(&DefaultTTL)
 }
 
 func createLogFiles() (*os.File, *os.File) {
@@ -196,7 +209,6 @@ func killDNSonExit() {
 func displayBanner() {
 	red := "\033[31m"
 	reset := "\033[0m"
-	cowitnessVersion := "v1.1"
 	banner := red + `
  	          ⢠⡄
 	    	⣠⣤⣾⣷⣤⣄⡀⠀⠀⠀⠀
@@ -210,6 +222,6 @@ func displayBanner() {
 ` + reset
 
 	fmt.Print(banner)
-	fmt.Println("             CoWitness", cowitnessVersion, "- Tool for HTTP, HTTPS, and DNS Server")
+	fmt.Println("             CoWitness", version(), "- Tool for HTTP, HTTPS, and DNS Server")
 	fmt.Println()
 }
